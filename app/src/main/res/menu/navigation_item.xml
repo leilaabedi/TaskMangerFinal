@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item  android:id="@+id/aboutus"   android:title="درباره ما" />
+    <item  android:id="@+id/contactus"  android:title="تماس با ما" />
+    <item  android:id="@+id/search"  android:title="جستجو" />
+    <item  android:id="@+id/setting"  android:title="تنظیمات" />
+
+</menu>

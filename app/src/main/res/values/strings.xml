@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">TaskMangerFinal</string>
+    <string name="task_title">Enter task title</string>
+    <string name="task_description">Enter task description</string>
+    <string name="text_login">login</string>
+    <string name="button_login">Log in</string>
+    <string name="text_sign_up">Sign up</string>
+    <string name="button_sign_up">Sign up</string>
+    <string name="text_recycler_view">The list Task is empty, please click on add button</string>
+    <string name="save">Save</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+
+
+</resources>
