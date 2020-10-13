@@ -26,7 +26,7 @@ import androidx.fragment.app.Fragment;
 import com.maktab.taskmangerfinal.R;
 import com.maktab.taskmangerfinal.model.State;
 import com.maktab.taskmangerfinal.model.Task;
-import com.maktab.taskmangerfinal.repository.TaskRepository;
+import com.maktab.taskmangerfinal.repository.TaskDBRepository;
 
 import java.util.Date;
 
@@ -100,7 +100,7 @@ public class TaskDetailFragment extends DialogFragment {
                         task.setTaskDescription(mTask.getTaskDescription());
                         task.setTaskState(mTask.getTaskState());
                         task.setTaskTime(mTask.getTaskDate());
-                        TaskRepository.getInstance().removeSingleTask(mTask.getTaskID());
+                        TaskDBRepository.getInstance(getContext()).removeSingleTask(mTask);
                         sendResult(task);
                     }
                 })

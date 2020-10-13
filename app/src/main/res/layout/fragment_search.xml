@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".search.ActivitySearch">
+
+
+
+    <EditText
+        android:id="@+id/searchitem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:ems="10"
+        android:inputType="textPersonName" />
+
+    <LinearLayout
+        android:id="@+id/serachoption"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+
+        <RadioGroup
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/titleSearch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Title" />
+
+            <RadioButton
+                android:id="@+id/desSearch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Description" />
+
+
+        </RadioGroup>
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/my_recycler_view"
+        android:clipToPadding="false"
+        android:scrollbars="vertical"
+        >
+
+
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+</LinearLayout>

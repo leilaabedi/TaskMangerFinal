@@ -7,8 +7,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -18,8 +16,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -27,10 +23,12 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.maktab.taskmangerfinal.R;
-
 import com.maktab.taskmangerfinal.fragment.DoingFragment;
 import com.maktab.taskmangerfinal.fragment.DoneFragment;
 import com.maktab.taskmangerfinal.fragment.ToDoFragment;
+import com.maktab.taskmangerfinal.search.ActivitySearch;
+
+//import com.maktab.taskmangerfinal.fragment.DoneFragment;
 
 
 public class PagerActivity extends AppCompatActivity {
@@ -42,8 +40,9 @@ public class PagerActivity extends AppCompatActivity {
     NavigationView navigationView;
     ImageView hambur;
     PageAdapter mPageAdapter;
+    AlertDialog.Builder alertBuilder;
 
-   // PageAdapter mPageAdapter;
+    // PageAdapter mPageAdapter;
 
 
     public static Intent newIntent(Context context) {
@@ -58,7 +57,7 @@ public class PagerActivity extends AppCompatActivity {
         context = getApplicationContext();
 
         findViews();
-      initView();
+        initView();
         //setTabOption();
         setListener();
     }
@@ -68,9 +67,9 @@ public class PagerActivity extends AppCompatActivity {
         mViewPager = findViewById(R.id.viewPager);
         drawerLayout = findViewById(R.id.navigation_drawer);
         navigationView = findViewById(R.id.navigation_view);
-        hambur=findViewById(R.id.ham);
+        hambur = findViewById(R.id.ham);
 
-       mTabLayout = findViewById(R.id.tabLayout);
+        mTabLayout = findViewById(R.id.tabLayout);
     }
 
 
@@ -103,8 +102,7 @@ public class PagerActivity extends AppCompatActivity {
     }
 
 
-
-    private void setListener(){
+    private void setListener() {
 
         hambur.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,12 +119,47 @@ public class PagerActivity extends AppCompatActivity {
                 if (id == R.id.setting) {
                     Log.i("mylog", "hello!");
                 }
+
+                if (id == R.id.search) {
+
+                    Intent intent = new Intent(PagerActivity.this, ActivitySearch.class);
+                    startActivity(intent);
+
+                }
+
+                if (id == R.id.exit) {
+
+                    alertBuilder = new AlertDialog.Builder(PagerActivity.this);
+                    alertBuilder.setTitle("خروج");
+                    alertBuilder.setMessage("آیا می خواهید خارج شوید؟");
+
+                    alertBuilder.setPositiveButton("بله", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            Intent intent = new Intent(PagerActivity.this, MainActivity.class);
+                            startActivity(intent);
+                        }
+                    });
+
+                    alertBuilder.setNegativeButton("خیر", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+
+
+
+                        }
+                    });
+
+
+                    AlertDialog alert = alertBuilder.create();
+                    alert.show();
+                }
+
+
                 return true;
             }
         });
     }
-
-
 
 
     private class PageAdapter extends FragmentStateAdapter {
@@ -213,7 +246,6 @@ public class PagerActivity extends AppCompatActivity {
         super.onPause();
         mPageAdapter.notifyDataSetChanged();
     }
-
 
 
 }

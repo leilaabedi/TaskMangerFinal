@@ -17,151 +17,122 @@ import androidx.fragment.app.FragmentManager;
 import com.maktab.taskmangerfinal.R;
 import com.maktab.taskmangerfinal.controller.PagerActivity;
 import com.maktab.taskmangerfinal.model.User;
+import com.maktab.taskmangerfinal.repository.UserDBRepository;
 
 
 public class LoginFragment extends Fragment {
 
-    public static final int Request_Code_Sign_Up = 0;
+    static final int REQUEST_CODE_SIGN_UP = 0;
+    private static final String TAG_SIGN_UP = "signUpFragment";
 
-
-    private EditText mUserName;
-    private EditText mPassword;
-    private Button mLoginButton;
-    private Button mSignUpButton;
-
-    private User[] mUsers = new User[10];
-    private int mCurrentIndex = 0;
-
+    private UserDBRepository mUserRepository;
+    private User mUser;
+    private EditText mUsername, mUserPassword;
+    private Button mLogin, mSingUp;
 
     public LoginFragment() {
         // Required empty public constructor
     }
 
-
     public static LoginFragment newInstance() {
-        LoginFragment fragment = new LoginFragment();
+
         Bundle args = new Bundle();
+
+        LoginFragment fragment = new LoginFragment();
         fragment.setArguments(args);
         return fragment;
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-    }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_login, container, false);
-        findViews(view);
-        setListener();
 
+        initUI(view);
+
+        mSingUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String username = mUsername.getText().toString();
+                String password = mUserPassword.getText().toString();
+                SignUpFragment signUpFragment = SignUpFragment.newInstance(username, password);
+                signUpFragment.setTargetFragment(LoginFragment.this, REQUEST_CODE_SIGN_UP);
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                fragmentManager.beginTransaction().add(R.id.fragment_container, signUpFragment, TAG_SIGN_UP).commit();
+            }
+        });
+
+        mLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (validateUsername())
+                    if (validatePassword()) {
+                        Intent intent = PagerActivity.newIntent(getActivity());
+                        startActivity(intent);
+                        getActivity().finish();
+                    }
+            }
+        });
 
         return view;
     }
 
-
-    private void findViews(View view) {
-        mUserName = view.findViewById(R.id.txt_username);
-        mPassword = view.findViewById(R.id.txt_password);
-        mLoginButton = view.findViewById(R.id.btn_login);
-        mSignUpButton = view.findViewById(R.id.btn_sign_up);
-    }
-
-    private void setListener() {
-        mSignUpButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                User user = new User();
-
-                if (mUserName.getText().toString().isEmpty() || mPassword.getText().toString().isEmpty()) {
-                    Toast.makeText(getActivity(),
-                            "You Should Fill The UserName Field and UserPassword Field",
-                            Toast.LENGTH_LONG).show();
-                }
-
-                if (!mUserName.getText().toString().isEmpty() && !mPassword.getText().toString().isEmpty()) {
-                    user.setUserName(mUserName.getText().toString());
-                    user.setUserPassword(mPassword.getText().toString());
-                    mUsers[mCurrentIndex] = user;
-
-                    SignUpFragment signUpFragment = SignUpFragment.newInstance(user, mUsers, mCurrentIndex);
-
-                    signUpFragment.setTargetFragment(
-                            LoginFragment.this,
-                            Request_Code_Sign_Up);
-
-                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                    fragmentManager.
-                            beginTransaction().
-                            add(R.id.fragment_container, signUpFragment).
-                            commit();
-                }
-
-            }
-        });
-
-        mLoginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                boolean isLogIn = false;
-//                User user = new User();
-
-                if (mUserName.getText().toString().isEmpty() || mPassword.getText().toString().isEmpty()) {
-                    Toast.makeText(getActivity(),
-                            "You Should Fill The UserName Field and UserPassword Field",
-                            Toast.LENGTH_LONG).show();
-                } else {
-                    out:
-                    for (int i = 0; i < mCurrentIndex; i++) {
-                        if (mUsers[i].getUserName().equals(mUserName.getText().toString()) &&
-                                mUsers[i].getUserPassword().equals(mPassword.getText().toString())) {
-//                            user = mUsers[i];
-                            isLogIn = true;
-                            break out;
-                        }
-                    }
-                    if (!isLogIn) {
-                        Toast.makeText(getActivity(),
-                                "You Should Sign Up First",
-                                Toast.LENGTH_SHORT).show();
-                    } else {
-                        Intent intent = PagerActivity.newIntent(getActivity());
-                        startActivity(intent);
-
-                       // Toast.makeText(getActivity(),
-                         //       "Login Succefully",
-                           //     Toast.LENGTH_SHORT).show();
-                    }
-
-                }
-            }
-
-        });
-
+    private void initUI(View view) {
+        mUserPassword = view.findViewById(R.id.txt_password);
+        mUsername = view.findViewById(R.id.txt_username);
+        mLogin = view.findViewById(R.id.btn_login);
+        mSingUp = view.findViewById(R.id.btn_sign_up);
+        mUserRepository = UserDBRepository.getInstance(getActivity().getApplicationContext());
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+
         if (resultCode == Activity.RESULT_CANCELED || data == null)
             return;
 
-        if (requestCode == Request_Code_Sign_Up) {
+        if (requestCode == REQUEST_CODE_SIGN_UP) {
 
-            mUsers = (User[]) data.getSerializableExtra(SignUpFragment.EXTRA_USERS_SING_UP);
-            mCurrentIndex = data.
-                    getIntExtra(SignUpFragment.EXTRA_USERS_M_CURRENT_INDEX,
-                            0);
+            User user = new User();
 
-            mUserName.setText(mUsers[mCurrentIndex - 1].getUserName());
-            mPassword.setText(mUsers[mCurrentIndex - 1].getUserPassword());
-
+            mUsername.setText(user.getUserName());
+            mUserPassword.setText(user.getPassword());
         }
     }
+
+    private boolean validateUsername() {
+        String username = mUsername.getText().toString().trim();
+        if (username.isEmpty()) {
+            Toast.makeText(getActivity(), "You Can Not LogIn, Please Fill UserName", Toast.LENGTH_LONG).show();
+            return false;
+        } else if (mUserRepository.getUser(username) == null) {
+            Toast.makeText(getActivity(), "You Should Sign Up First!!!", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        return true;
+    }
+
+    private Boolean validatePassword() {
+
+        mUser = mUserRepository.getUser(mUsername.getText().toString().trim());
+        String password = mUserPassword.getText().toString().trim();
+
+
+        if (password.isEmpty()) {
+            Toast.makeText(getActivity(), "You Can Not LogIn, Please Fill UserPassword", Toast.LENGTH_LONG).show();
+            return false;
+
+        } else if (!mUser.getPassword().equals(password)) {
+            Toast.makeText(getActivity(), "You Can Not LogIn, Password Does Not Match", Toast.LENGTH_LONG).show();
+            return false;
+
+        } else if (mUser.getPassword().equals(password)) {
+            return true;
+        }
+        return null;
+    }
 }
+

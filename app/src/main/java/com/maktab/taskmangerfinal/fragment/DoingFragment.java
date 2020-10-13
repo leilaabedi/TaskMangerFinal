@@ -18,10 +18,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.maktab.taskmangerfinal.R;
 import com.maktab.taskmangerfinal.model.State;
 import com.maktab.taskmangerfinal.model.Task;
-import com.maktab.taskmangerfinal.repository.TaskRepository;
+import com.maktab.taskmangerfinal.repository.TaskDBRepository;
 
 import java.util.List;
-import java.util.UUID;
 
 
 public class DoingFragment extends Fragment {
@@ -77,7 +76,7 @@ public class DoingFragment extends Fragment {
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        TaskRepository taskRepository = TaskRepository.getInstance();
+        TaskDBRepository taskRepository = TaskDBRepository.getInstance(getActivity());
         List<Task> tasks = taskRepository.getTasksList(State.DOING);
 
         updateUI(tasks);
@@ -117,6 +116,7 @@ public class DoingFragment extends Fragment {
 
                 TaskDetailFragment taskDetailFragment =
                         TaskDetailFragment.newInstance(mTask, /** mTask.getTaskDate(),**/State.DOING);
+
 
                 taskDetailFragment.setTargetFragment(
                         DoingFragment.this, REQUEST_CODE_TASK_DETAIL_FRAGMENT);
@@ -213,23 +213,23 @@ public class DoingFragment extends Fragment {
             Task task =
                     (Task) data.getSerializableExtra(TaskDetailFragment.EXTRA_TASK);
 
-            TaskRepository.getInstance().addTaskDoing(task);
-            TaskRepository.getInstance().updateTask(task);
-            updateUI(TaskRepository.getInstance().getTasksList(task.getTaskState()));
+            TaskDBRepository.getInstance(getActivity()).addTaskDoing(task);
+            TaskDBRepository.getInstance(getActivity()).updateTask(task);
+            updateUI(TaskDBRepository.getInstance(getActivity()).getTasksList(task.getTaskState()));
         }
-/*
+
         if (requestCode == REQUEST_CODE_CHANGE_TASK_FRAGMENT) {
 
             switch (resultCode) {
                 case ChangeTaskFragment.RESULT_CODE_EDIT_TASK:
                     Task task = (Task) data.getSerializableExtra(ChangeTaskFragment.EXTRA_TASK_CHANGE);
-                    TaskRepository.getInstance().updateTask(task);
+                    TaskDBRepository.getInstance(getActivity()).updateTask(task);
 
                     updateEditUI();
                     break;
                 case ChangeTaskFragment.RESULT_CODE_DELETE_TASK:
-                    UUID uuid = (UUID) data.getSerializableExtra(ChangeTaskFragment.EXTRA_TASK_CHANGE_DELETE);
-                    TaskRepository.getInstance().removeSingleTask(uuid);
+                    Task task1 = (Task) data.getSerializableExtra(ChangeTaskFragment.EXTRA_TASK_CHANGE_DELETE);
+                    TaskDBRepository.getInstance(getActivity()).removeSingleTask(task1);
                     updateEditUI();
                     break;
                 default:
@@ -238,7 +238,7 @@ public class DoingFragment extends Fragment {
 
         }
 
- */
+
 
     }
 

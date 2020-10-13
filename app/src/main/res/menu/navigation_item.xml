@@ -4,5 +4,6 @@
     <item  android:id="@+id/contactus"  android:title="تماس با ما" />
     <item  android:id="@+id/search"  android:title="جستجو" />
     <item  android:id="@+id/setting"  android:title="تنظیمات" />
+    <item  android:id="@+id/exit"  android:title="خروج" />
 
 </menu>

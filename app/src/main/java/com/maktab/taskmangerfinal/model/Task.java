@@ -22,6 +22,23 @@ public class Task implements Serializable {
         mTaskDate = new Date();
     }
 
+    public Task(UUID id, String title, String description, State state, Date date) {
+        mTaskID = id;
+        mTaskTitle = title;
+        mTaskDescription = description;
+        mTaskState = state;
+        mTaskDate = date;
+    }
+
+
+    public Task(UUID id, String title, String description, State state) {
+        mTaskID = id;
+        mTaskTitle = title;
+        mTaskDescription = description;
+        mTaskState = state;
+
+    }
+
     public UUID getTaskID() {
         return mTaskID;
     }

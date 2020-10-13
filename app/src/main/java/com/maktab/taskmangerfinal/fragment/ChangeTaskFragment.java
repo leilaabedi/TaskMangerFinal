@@ -23,7 +23,7 @@ import androidx.fragment.app.Fragment;
 import com.maktab.taskmangerfinal.R;
 import com.maktab.taskmangerfinal.model.State;
 import com.maktab.taskmangerfinal.model.Task;
-import com.maktab.taskmangerfinal.repository.TaskRepository;
+import com.maktab.taskmangerfinal.repository.TaskDBRepository;
 
 import java.util.Date;
 import java.util.UUID;
@@ -95,7 +95,7 @@ public class ChangeTaskFragment extends DialogFragment {
                 .setNegativeButton("Delete", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        sendResultForDelete(mTask.getTaskID());
+                        sendResultForDelete(mTask);
                     }
                 })
                 .setView(view);
@@ -191,7 +191,7 @@ public class ChangeTaskFragment extends DialogFragment {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
 
-                updateTaskState(mTask.getTaskID());
+                updateTaskState(mTask);
 
                 if (checkedId == mRadioButtonToDo.getId()) {
                     mRadioButtonToDo.setChecked(true);
@@ -203,8 +203,8 @@ public class ChangeTaskFragment extends DialogFragment {
                     task.setTaskDate(mTask.getTaskDate());
                     task.setTaskTime(mTask.getTaskDate());
 
-                    TaskRepository.getInstance().addTaskToDo(task);
-                    TaskRepository.getInstance().getTasks();
+                    TaskDBRepository.getInstance(getActivity()).addTaskToDo(task);
+                    TaskDBRepository.getInstance(getActivity()).getTasks();
 
                 } else if (checkedId == mRadioButtonDoing.getId()) {
                     mRadioButtonDoing.setChecked(true);
@@ -217,8 +217,8 @@ public class ChangeTaskFragment extends DialogFragment {
                     task.setTaskDate(mTask.getTaskDate());
                     task.setTaskTime(mTask.getTaskDate());
 
-                    TaskRepository.getInstance().addTaskDoing(task);
-                    TaskRepository.getInstance().getTasks();
+                    TaskDBRepository.getInstance(getActivity()).addTaskDoing(task);
+                    TaskDBRepository.getInstance(getActivity()).getTasks();
 
                 } else {
                     mRadioButtonDone.setChecked(true);
@@ -230,18 +230,18 @@ public class ChangeTaskFragment extends DialogFragment {
                     task.setTaskDate(mTask.getTaskDate());
                     task.setTaskTime(mTask.getTaskDate());
 
-                    TaskRepository.getInstance().addTaskDone(task);
-                    TaskRepository.getInstance().getTasks();
+                    TaskDBRepository.getInstance(getActivity()).addTaskDone(task);
+                    TaskDBRepository.getInstance(getActivity()).getTasks();
                 }
 
-                TaskRepository.getInstance().getTasks();
+                TaskDBRepository.getInstance(getActivity()).getTasks();
 
             }
         });
     }
 
-    private void updateTaskState(UUID taskID) {
-        TaskRepository.getInstance().removeSingleTask(taskID);
+    private void updateTaskState(Task task) {
+        TaskDBRepository.getInstance(getActivity()).removeSingleTask(task);
     }
 
     private void updateUI() {
@@ -300,15 +300,16 @@ public class ChangeTaskFragment extends DialogFragment {
         fragment.onActivityResult(requestCode, resultCode, intent);
     }
 
-    private void sendResultForDelete(UUID taskId) {
+    private void sendResultForDelete(Task task) {
 
         Fragment fragment = getTargetFragment();
         int requestCode = getTargetRequestCode();
         int resultCode = RESULT_CODE_DELETE_TASK;
 
         Intent intent = new Intent();
-        intent.putExtra(EXTRA_TASK_CHANGE_DELETE, taskId);
+        intent.putExtra(EXTRA_TASK_CHANGE_DELETE, task);
 
         fragment.onActivityResult(requestCode, resultCode, intent);
     }
 }
+
